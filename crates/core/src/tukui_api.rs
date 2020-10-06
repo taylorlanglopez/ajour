@@ -23,6 +23,8 @@ fn api_endpoint(id: &str, flavor: &Flavor) -> String {
             _ => format!("https://www.tukui.org/api.php?addon={}", id),
         },
         Flavor::Classic => format!("https://www.tukui.org/api.php?classic-addon={}", id),
+        // This needs to be handled correctly, this is only for compiling purposes
+        _ => format!("https:://www.tukui.org/api.php?addon={}", id),
     }
 }
 

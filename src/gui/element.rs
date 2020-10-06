@@ -898,7 +898,7 @@ pub fn addon_row_titles<'a>(
         Message::Interaction(Interaction::ResizeColumn(event))
     })
 }
-
+//theme_state: &'a mut ThemeState,
 #[allow(clippy::too_many_arguments)]
 pub fn menu_container<'a>(
     color_palette: ColorPalette,
@@ -907,6 +907,9 @@ pub fn menu_container<'a>(
     settings_button_state: &'a mut button::State,
     retail_btn_state: &'a mut button::State,
     classic_btn_state: &'a mut button::State,
+    classic_ptr_btn_state: &'a mut button::State,
+    retail_ptr_btn_state: &'a mut button::State,
+    beta_btn_state: &'a mut button::State,
     state: &AjourState,
     addons: &[Addon],
     config: &'a mut Config,
@@ -973,28 +976,105 @@ pub fn menu_container<'a>(
     .style(style::SegmentedDisabledButton(color_palette))
     .on_press(Interaction::FlavorSelected(Flavor::Classic));
 
+    let mut classic_ptr_button = Button::new(
+        classic_ptr_btn_state,
+        Text::new("Classic - PTR").size(DEFAULT_FONT_SIZE),
+    )
+    .style(style::SegmentedDisabledButton(color_palette))
+    .on_press(Interaction::FlavorSelected(Flavor::ClassicPTR));
+
+    let mut beta_button = Button::new(
+        beta_btn_state,
+        Text::new("Beta").size(DEFAULT_FONT_SIZE),
+    )
+    .style(style::SegmentedDisabledButton(color_palette))
+    .on_press(Interaction::FlavorSelected(Flavor::Beta));
+
+    let mut retail_ptr_button = Button::new(
+        retail_ptr_btn_state,
+        Text::new("Retail - PTR").size(DEFAULT_FONT_SIZE),
+    )
+    .style(style::SegmentedDisabledButton(color_palette))
+    .on_press(Interaction::FlavorSelected(Flavor::RetailPTR));
+    
+
     if !ajour_performing_actions && !ajour_welcome {
         match config.wow.flavor {
             Flavor::Retail => {
                 retail_button = retail_button.style(style::SegmentedSelectedButton(color_palette));
                 classic_button =
                     classic_button.style(style::SegmentedUnselectedButton(color_palette));
+                classic_ptr_button =
+                    classic_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+                beta_button  = 
+                    beta_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_ptr_button =
+                    retail_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
             }
             Flavor::Classic => {
                 classic_button =
                     classic_button.style(style::SegmentedSelectedButton(color_palette));
                 retail_button =
                     retail_button.style(style::SegmentedUnselectedButton(color_palette));
+                classic_ptr_button =
+                    classic_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+                beta_button  = 
+                    beta_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_ptr_button =
+                    retail_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+            }
+            Flavor::RetailPTR => {
+                retail_ptr_button =
+                    retail_ptr_button.style(style::SegmentedSelectedButton(color_palette));
+                classic_button =
+                    classic_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_button =
+                    retail_button.style(style::SegmentedUnselectedButton(color_palette));
+                classic_ptr_button =
+                    classic_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+                beta_button  = 
+                    beta_button.style(style::SegmentedUnselectedButton(color_palette));
+            }
+            Flavor::ClassicPTR => {
+                classic_ptr_button =
+                    classic_ptr_button.style(style::SegmentedSelectedButton(color_palette));
+                classic_button =
+                    classic_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_button =
+                    retail_button.style(style::SegmentedUnselectedButton(color_palette));
+                beta_button  = 
+                    beta_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_ptr_button =
+                    retail_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+            }
+            Flavor::Beta => {
+                beta_button  = 
+                    beta_button.style(style::SegmentedSelectedButton(color_palette));
+                retail_button =
+                    retail_button.style(style::SegmentedUnselectedButton(color_palette));
+                classic_button =
+                    classic_button.style(style::SegmentedUnselectedButton(color_palette));
+                classic_ptr_button =
+                    classic_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
+                retail_ptr_button =
+                    retail_ptr_button.style(style::SegmentedUnselectedButton(color_palette));
             }
         }
     }
 
     let retail_button: Element<Interaction> = retail_button.into();
     let classic_button: Element<Interaction> = classic_button.into();
+    let classic_ptr_button: Element<Interaction> = classic_ptr_button.into();
+    let retail_ptr_button: Element<Interaction> = retail_ptr_button.into();
+    let beta_button: Element<Interaction> = beta_button.into();
+
 
     let segmented_flavor_control_container = Row::new()
         .push(retail_button.map(Message::Interaction))
         .push(classic_button.map(Message::Interaction))
+        .push(retail_ptr_button.map(Message::Interaction))
+        .push(classic_ptr_button.map(Message::Interaction))
+        .push(beta_button.map(Message::Interaction))
         .spacing(0);
 
     // Displays text depending on the state of the app.

@@ -27,10 +27,22 @@ pub enum Flavor {
     Retail,
     #[serde(alias = "classic")]
     Classic,
+    #[serde(alias = "ptr")]
+    RetailPTR,
+    #[serde(alias = "classic_ptr")]
+    ClassicPTR,
+    #[serde(alias = "beta")]
+    Beta,
 }
 
 impl Flavor {
-    pub const ALL: [Flavor; 2] = [Flavor::Retail, Flavor::Classic];
+    pub const ALL: [Flavor; 5] = [
+        Flavor::Retail, 
+        Flavor::Classic, 
+        Flavor::RetailPTR,
+        Flavor::ClassicPTR, 
+        Flavor::Beta,
+    ];
 }
 
 impl Default for Flavor {
@@ -47,7 +59,11 @@ impl std::fmt::Display for Flavor {
             match self {
                 Flavor::Retail => "retail",
                 Flavor::Classic => "classic",
+                Flavor::RetailPTR => "ptr",
+                Flavor::ClassicPTR => "classic_ptr",
+                Flavor::Beta => "beta",
             }
         )
     }
 }
+
